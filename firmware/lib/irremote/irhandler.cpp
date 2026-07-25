@@ -254,6 +254,7 @@ void irremoteTick() {
         Serial.println(" steps)");
       }
     }
+    blinkLED();
   }
 
   IrReceiver.resume();

@@ -9,3 +9,4 @@ void applySettingsFromJson(JsonObject doc);
 void buildSettingsJson(JsonObject doc);
 bool saveSettingsToFS();
 void updateLED();
+void blinkLED();

@@ -486,6 +486,13 @@ void updateLED() {
   strip.show();
 }
 
+void blinkLED() {
+  strip.setPixelColor(0, 0x000000);
+  strip.show();
+  delay(100);
+  updateLED();
+}
+
 // ------------------------------
 void setup() {
   Serial.begin(115200);

@@ -57,6 +57,9 @@ const KEY_TO_HID = {
   "AudioVolumeDown":    { type: "consumer", key: "0xEA" },
   "AudioVolumeMute":    { type: "consumer", key: "0xE2" },
   "MediaPlayPause":     { type: "consumer", key: "0xCD" },
+  "MediaPlay":          { type: "consumer", key: "0xB0" },
+  "MediaPause":         { type: "consumer", key: "0xB1" },
+  "MediaRecord":        { type: "consumer", key: "0xB2" },
   "MediaTrackNext":     { type: "consumer", key: "0xB5" },
   "MediaTrackPrevious": { type: "consumer", key: "0xB6" },
   "MediaStop":          { type: "consumer", key: "0xB7" },
@@ -74,12 +77,15 @@ const KEY_TO_HID = {
   "Tab":                { type: "keyboard", key: "0x2B" },
   "Delete":             { type: "keyboard", key: "0x4C" },
   " ":                  { type: "keyboard", key: "0x2C" },
+  "Super":              { type: "keyboard", key: "0xE3" },
   "F1":  { type: "keyboard", key: "0x3A" }, "F2":  { type: "keyboard", key: "0x3B" },
   "F3":  { type: "keyboard", key: "0x3C" }, "F4":  { type: "keyboard", key: "0x3D" },
   "F5":  { type: "keyboard", key: "0x3E" }, "F6":  { type: "keyboard", key: "0x3F" },
   "F7":  { type: "keyboard", key: "0x40" }, "F8":  { type: "keyboard", key: "0x41" },
   "F9":  { type: "keyboard", key: "0x42" }, "F10": { type: "keyboard", key: "0x43" },
   "F11": { type: "keyboard", key: "0x44" }, "F12": { type: "keyboard", key: "0x45" },
+  "F14 (RED)": { type: "keyboard", key: "0x69" }, "F15 (GREEN)": { type: "keyboard", key: "0x6A" },
+  "F16 (BLUE)": { type: "keyboard", key: "0x6B" }, "F17 (YELLOW)": { type: "keyboard", key: "0x6C" },
 };
 
 // ── State ─────────────────────────────────────────────────────

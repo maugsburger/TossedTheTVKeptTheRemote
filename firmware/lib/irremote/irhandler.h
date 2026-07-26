@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <ArduinoJson.h>
+#include "hid.h"
 
 // IR Settings (defaults — overridden by JSON if present)
 #define MODE_CHANGE_CODE 0xC40387EE
@@ -54,9 +55,6 @@ extern char      comboTextData[MODE_COUNT][MAX_MAPPINGS][MAX_COMBO_STEPS][MAX_TE
 // Callbacks into main.cpp — defined there, called by irremoteTick
 void updateLED();
 void blinkLED();
-void sendKeyboardReport(uint8_t keycode, uint8_t modifier = 0);
-void sendKeyboardKey(uint8_t ascii);
-void sendConsumerKey(uint16_t key);
 
 // IR module API
 void clearModeSlots(uint8_t modeIndex);

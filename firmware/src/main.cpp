@@ -114,6 +114,7 @@ void buildSettingsJson(JsonObject doc) {
   ir["receivePin"] = RECV_PIN;
   ir["handleRepeat"] = HANDLE_REPEAT_CONFIG;
   ir["repeatInitialDelayReports"] = REPEAT_DELAY_REPORTS;
+  ir["releaseKeyTimeout"] = RELEASE_KEY_TIMEOUT_CONFIG;
 
   JsonObject led = doc["led"].to<JsonObject>();
   led["pin"] = LED_PIN_CONFIG;
@@ -333,5 +334,6 @@ void setup() {
 void loop() {
   webSerialTick();
   TinyUSBDevice.task();
+  hidKeyTick();
   irremoteTick();
 }

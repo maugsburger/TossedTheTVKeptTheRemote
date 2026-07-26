@@ -15,15 +15,6 @@
 #define MAX_COMBO_STEPS    8
 #define MAX_TEXT_STEP_LEN 48
 
-enum IRSlotType : uint8_t {
-  SLOT_NONE        = 0,
-  SLOT_KEYBOARD    = 1,
-  SLOT_CONSUMER    = 2,
-  SLOT_MODE_SWITCH = 3,
-  SLOT_COMBO       = 4,
-  SLOT_TEXT        = 5
-};
-
 struct ComboStep {
   uint16_t key;
   uint8_t  type;

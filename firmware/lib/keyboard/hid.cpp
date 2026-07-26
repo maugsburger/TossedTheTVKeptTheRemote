@@ -7,6 +7,8 @@
 
 Adafruit_USBD_HID usb_hid;
 
+uint16_t RELEASE_KEY_TIMEOUT_CONFIG = RELEASE_KEY_TIMEOUT;
+
 uint8_t const hid_report_desc[] = {
   TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(1)),
   TUD_HID_REPORT_DESC_CONSUMER(HID_REPORT_ID(2))
@@ -166,13 +168,33 @@ bool asciiToHid(uint8_t ascii, uint8_t* modifier, uint8_t* keycode) {
   }
 }
 
-void sendKeyboardReport(uint8_t keycode, uint8_t modifier) {
+void sendKeyboardDown(uint8_t keycode, uint8_t modifier) {
   if (!TinyUSBDevice.mounted()) return;
   uint8_t keycodes[6] = {keycode, 0, 0, 0, 0, 0};
   tud_hid_keyboard_report(1, modifier, keycodes);
-  delay(10);
+}
+
+void sendKeyboardUp() {
+  if (!TinyUSBDevice.mounted()) return;
   uint8_t empty[6] = {0};
   tud_hid_keyboard_report(1, 0, empty);
+}
+
+void sendConsumerDown(uint16_t key) {
+  if (!TinyUSBDevice.mounted()) return;
+  tud_hid_report(2, &key, sizeof(key));
+}
+
+void sendConsumerUp() {
+  if (!TinyUSBDevice.mounted()) return;
+  uint16_t empty = 0;
+  tud_hid_report(2, &empty, sizeof(empty));
+}
+
+void sendKeyboardReport(uint8_t keycode, uint8_t modifier) {
+  sendKeyboardDown(keycode, modifier);
+  delay(10);
+  sendKeyboardUp();
 }
 
 void sendKeyboardKey(uint8_t ascii) {
@@ -187,9 +209,63 @@ void sendKeyboardKey(uint8_t ascii) {
 }
 
 void sendConsumerKey(uint16_t key) {
-  if (!TinyUSBDevice.mounted()) return;
-  tud_hid_report(2, &key, sizeof(key));
+  sendConsumerDown(key);
   delay(10);
-  uint16_t empty = 0;
-  tud_hid_report(2, &empty, sizeof(empty));
+  sendConsumerUp();
+}
+
+// ------------------------------
+// HID hold state machine
+
+struct HidHeldKey {
+  uint8_t  type;
+  uint16_t key;
+  uint8_t  mods;
+  bool     held;
+  uint32_t lastTime;
+};
+
+static HidHeldKey heldKey = {0, 0, 0, false, 0};
+
+void hidKeyRelease() {
+  if (!heldKey.held) return;
+  if (heldKey.type == SLOT_KEYBOARD) {
+    sendKeyboardUp();
+  } else if (heldKey.type == SLOT_CONSUMER) {
+    sendConsumerUp();
+  }
+  heldKey.held = false;
+}
+
+void hidKeyPress(uint8_t type, uint16_t key, uint8_t mods) {
+  if (heldKey.held && (heldKey.type != type || heldKey.key != key || heldKey.mods != mods)) {
+    hidKeyRelease();
+  }
+  if (type == SLOT_KEYBOARD) {
+    sendKeyboardDown((uint8_t)key, mods);
+  } else if (type == SLOT_CONSUMER) {
+    sendConsumerDown(key);
+  }
+  heldKey = {type, key, mods, true, millis()};
+}
+
+void hidKeyRepeat() {
+  if (!heldKey.held) return;
+  if (heldKey.type == SLOT_KEYBOARD) {
+    sendKeyboardDown((uint8_t)heldKey.key, heldKey.mods);
+  } else if (heldKey.type == SLOT_CONSUMER) {
+    sendConsumerDown(heldKey.key);
+  }
+  heldKey.lastTime = millis();
+}
+
+void hidKeyKeepAlive() {
+  if (!heldKey.held) return;
+  heldKey.lastTime = millis();
+}
+
+void hidKeyTick() {
+  if (heldKey.held && (millis() - heldKey.lastTime > RELEASE_KEY_TIMEOUT_CONFIG)) {
+    hidKeyRelease();
+  }
 }

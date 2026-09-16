@@ -57,6 +57,9 @@ const KEY_TO_HID = {
   "AudioVolumeDown":    { type: "consumer", key: "0xEA" },
   "AudioVolumeMute":    { type: "consumer", key: "0xE2" },
   "MediaPlayPause":     { type: "consumer", key: "0xCD" },
+  "MediaPlay":          { type: "consumer", key: "0xB0" },
+  "MediaPause":         { type: "consumer", key: "0xB1" },
+  "MediaRecord":        { type: "consumer", key: "0xB2" },
   "MediaTrackNext":     { type: "consumer", key: "0xB5" },
   "MediaTrackPrevious": { type: "consumer", key: "0xB6" },
   "MediaStop":          { type: "consumer", key: "0xB7" },
@@ -74,12 +77,15 @@ const KEY_TO_HID = {
   "Tab":                { type: "keyboard", key: "0x2B" },
   "Delete":             { type: "keyboard", key: "0x4C" },
   " ":                  { type: "keyboard", key: "0x2C" },
+  "Super":              { type: "keyboard", key: "0xE3" },
   "F1":  { type: "keyboard", key: "0x3A" }, "F2":  { type: "keyboard", key: "0x3B" },
   "F3":  { type: "keyboard", key: "0x3C" }, "F4":  { type: "keyboard", key: "0x3D" },
   "F5":  { type: "keyboard", key: "0x3E" }, "F6":  { type: "keyboard", key: "0x3F" },
   "F7":  { type: "keyboard", key: "0x40" }, "F8":  { type: "keyboard", key: "0x41" },
   "F9":  { type: "keyboard", key: "0x42" }, "F10": { type: "keyboard", key: "0x43" },
   "F11": { type: "keyboard", key: "0x44" }, "F12": { type: "keyboard", key: "0x45" },
+  "F14 (RED)": { type: "keyboard", key: "0x69" }, "F15 (GREEN)": { type: "keyboard", key: "0x6A" },
+  "F16 (BLUE)": { type: "keyboard", key: "0x6B" }, "F17 (YELLOW)": { type: "keyboard", key: "0x6C" },
 };
 
 // ── State ─────────────────────────────────────────────────────
@@ -181,11 +187,75 @@ function parsePresetOption(val) {
   };
 }
 
+function keyCodeToHid(code) {
+  if (!code) return null;
+
+  if (code.startsWith("Key") && code.length === 4) {
+    const ch = code[3].toUpperCase();
+    if (ch >= "A" && ch <= "Z") {
+      const hid = 0x04 + (ch.charCodeAt(0) - 65);
+      return { type: "keyboard", key: "0x" + hid.toString(16).toUpperCase() };
+    }
+  }
+
+  if (code.startsWith("Digit") && code.length === 6) {
+    const d = code[5];
+    if (d >= "1" && d <= "9") {
+      const hid = 0x1E + (d.charCodeAt(0) - 49);
+      return { type: "keyboard", key: "0x" + hid.toString(16).toUpperCase() };
+    }
+    if (d === "0") return { type: "keyboard", key: "0x27" };
+  }
+
+  const byCode = {
+    Minus: "0x2D",
+    Equal: "0x2E",
+    BracketLeft: "0x2F",
+    BracketRight: "0x30",
+    Backslash: "0x31",
+    Semicolon: "0x33",
+    Quote: "0x34",
+    Backquote: "0x35",
+    Comma: "0x36",
+    Period: "0x37",
+    Slash: "0x38",
+    IntlBackslash: "0x64",
+    NumpadDivide: "0x54",
+    NumpadMultiply: "0x55",
+    NumpadSubtract: "0x56",
+    NumpadAdd: "0x57",
+    NumpadEnter: "0x58",
+    Numpad1: "0x59",
+    Numpad2: "0x5A",
+    Numpad3: "0x5B",
+    Numpad4: "0x5C",
+    Numpad5: "0x5D",
+    Numpad6: "0x5E",
+    Numpad7: "0x5F",
+    Numpad8: "0x60",
+    Numpad9: "0x61",
+    Numpad0: "0x62",
+    NumpadDecimal: "0x63",
+    NumpadComma: "0x85",
+  };
+
+  if (byCode[code]) return { type: "keyboard", key: byCode[code] };
+  return null;
+}
+
 function keyEventToHid(e) {
-  let base = KEY_TO_HID[e.key];
+  let base = keyCodeToHid(e.code) || KEY_TO_HID[e.key];
   if (!base) {
     const k = e.key.toLowerCase();
-    if (k.length === 1 && k >= "a" && k <= "z")
+    if (k === "-" || k === "_")
+      base = { type: "keyboard", key: "0x2D" };
+    else if (k === "=" || k === "+")
+      base = { type: "keyboard", key: "0x2E" };
+    else if (k === "," || k === "<")
+      base = { type: "keyboard", key: "0x36" };
+    else if (k === "." || k === ">")
+      base = { type: "keyboard", key: "0x37" };
+    else if (k.length === 1 && k >= "a" && k <= "z")
       base = { type: "keyboard", key: "0x" + (0x04 + k.charCodeAt(0) - 97).toString(16).toUpperCase() };
     else if (k >= "1" && k <= "9")
       base = { type: "keyboard", key: "0x" + (0x1E + k.charCodeAt(0) - 49).toString(16).toUpperCase() };
@@ -233,6 +303,10 @@ function getHidKeyLabel(type, key, mods) {
     if (code >= 0x04 && code <= 0x1D) return String.fromCharCode(65 + code - 0x04);
     if (code >= 0x1E && code <= 0x26) return String(code - 0x1E + 1);
     if (code === 0x27) return "0";
+    if (code === 0x2D) return "-";
+    if (code === 0x2E) return "=";
+    if (code === 0x36) return ",";
+    if (code === 0x37) return ".";
   }
   return key || "?";
 }

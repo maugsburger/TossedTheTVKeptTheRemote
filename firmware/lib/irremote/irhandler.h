@@ -10,7 +10,7 @@
 #define REPEAT_INITIAL_DELAY_REPORTS 5
 
 // Slot / mode sizing
-#define MAX_MAPPINGS      20
+#define MAX_MAPPINGS      40
 #define MODE_COUNT         5
 #define MAX_COMBO_STEPS    8
 #define MAX_TEXT_STEP_LEN 48

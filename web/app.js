@@ -43,7 +43,7 @@ const irPinInput      = document.getElementById("irPinInput");
 const ledPinInput     = document.getElementById("ledPinInput");
 
 // ── Constants ─────────────────────────────────────────────────
-const MAX_MAPPINGS = 20;
+const MAX_MAPPINGS = 40;
 const MAX_MODES    = 5;
 const LABELS_KEY   = "ir-hid-labels";
 

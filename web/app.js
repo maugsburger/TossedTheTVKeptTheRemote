@@ -53,16 +53,41 @@ const DEFAULT_MODE_COLORS = [
 
 // browser event.key → USB HID {type, key}
 const KEY_TO_HID = {
+  // Consumer General Control
+  "Power":              { type: "consumer", key: "0x30" },
+  "Reset":              { type: "consumer", key: "0x31" },
+  "Sleep":              { type: "consumer", key: "0x32" },
+  "Sleep After":        { type: "consumer", key: "0x33" },
+  "Sleep Mode":         { type: "consumer", key: "0x34" },
+  // Consumer Menu Control
+  "Menu":               { type: "consumer", key: "0x40" },
+  "Menu Pick":          { type: "consumer", key: "0x41" },
+  "Menu Up":            { type: "consumer", key: "0x42" },
+  "Menu Down":          { type: "consumer", key: "0x43" },
+  "Menu Left":          { type: "consumer", key: "0x44" },
+  "Menu Right":         { type: "consumer", key: "0x45" },
+  "Menu Escape":        { type: "consumer", key: "0x46" },
+  "Menu Value Increase":{ type: "consumer", key: "0x47" },
+  "Menu Value Decrease":{ type: "consumer", key: "0x48" },
+  "Menu Red":           { type: "consumer", key: "0x69" },
+  "Menu Green":         { type: "consumer", key: "0x6A" },
+  "Menu Blue":          { type: "consumer", key: "0x6B" },
+  "Menu Yellow":        { type: "consumer", key: "0x6C" },
+  // Consumer Audio Controls
   "AudioVolumeUp":      { type: "consumer", key: "0xE9" },
   "AudioVolumeDown":    { type: "consumer", key: "0xEA" },
   "AudioVolumeMute":    { type: "consumer", key: "0xE2" },
-  "MediaPlayPause":     { type: "consumer", key: "0xCD" },
+  // Consumer Transport Controls
   "MediaPlay":          { type: "consumer", key: "0xB0" },
   "MediaPause":         { type: "consumer", key: "0xB1" },
   "MediaRecord":        { type: "consumer", key: "0xB2" },
+  "MediaFastForward":   { type: "consumer", key: "0xB3" },
+  "MediaRewind":        { type: "consumer", key: "0xB4" },
   "MediaTrackNext":     { type: "consumer", key: "0xB5" },
   "MediaTrackPrevious": { type: "consumer", key: "0xB6" },
   "MediaStop":          { type: "consumer", key: "0xB7" },
+  "MediaPlayPause":     { type: "consumer", key: "0xCD" },
+  // Keyboard
   "ArrowRight":         { type: "keyboard", key: "0x4F" },
   "ArrowLeft":          { type: "keyboard", key: "0x50" },
   "ArrowUp":            { type: "keyboard", key: "0x52" },
@@ -84,8 +109,6 @@ const KEY_TO_HID = {
   "F7":  { type: "keyboard", key: "0x40" }, "F8":  { type: "keyboard", key: "0x41" },
   "F9":  { type: "keyboard", key: "0x42" }, "F10": { type: "keyboard", key: "0x43" },
   "F11": { type: "keyboard", key: "0x44" }, "F12": { type: "keyboard", key: "0x45" },
-  "F14 (RED)": { type: "keyboard", key: "0x69" }, "F15 (GREEN)": { type: "keyboard", key: "0x6A" },
-  "F16 (BLUE)": { type: "keyboard", key: "0x6B" }, "F17 (YELLOW)": { type: "keyboard", key: "0x6C" },
 };
 
 // ── State ─────────────────────────────────────────────────────

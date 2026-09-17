@@ -198,7 +198,6 @@ void irremoteTick() {
     }
     // Delay elapsed — send key-hold report (OS value 2)
     hidKeyRepeat();
-    blinkLED();
     IrReceiver.resume();
     return;
   }
@@ -271,7 +270,6 @@ void irremoteTick() {
         Serial.println(" steps)");
       }
     }
-    blinkLED();
   }
 
   IrReceiver.resume();
